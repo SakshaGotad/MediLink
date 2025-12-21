@@ -1,18 +1,47 @@
 /* eslint-disable prettier/prettier */
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
 
-export type UserDocument = Auth & Document;
-@Schema({timestamps: true})
-export class Auth {
-    @Prop({required: true, unique: true})
-    email: string;
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-    @Prop({required: true})
-    password: string;
-
-    @Prop({default:false})
-    isVerified: boolean;
+export enum UserRole {
+  PATIENT = 'PATIENT',
+  DOCTOR = 'DOCTOR',
 }
 
-export const UserSchema = SchemaFactory.createForClass(Auth);
+export enum UserState {
+  ONBOARDING = 'ONBOARDING',
+  ACTIVE = 'ACTIVE',
+  PENDING_VERIFICATION = 'PENDING_VERIFICATION',
+  SUSPENDED = 'SUSPENDED',
+}
+
+@Entity({ name: 'users' })
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 255 })
+  email: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  password: string;
+
+  @Column({ type: 'enum', enum: UserRole })
+  role: UserRole;
+
+  @Column({ type: 'enum', enum: UserState })
+  state: UserState;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  created_at: Date;
+ 
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updated_at: Date;
+}
