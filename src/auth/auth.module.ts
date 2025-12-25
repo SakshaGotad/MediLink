@@ -1,49 +1,32 @@
-/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { User, UserSchema } from './schemas/user.schema';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
-
-import googleOauthconfig from '../config/google-oauth.config';
-import jwtConfig from '../config/jwt.config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './schemas/auth.entity';
-import { AuthProvider } from './schemas/auth_provider.entity';
+import googleOauthConfig from 'src/config/google-oauth.config';
+import jwtConfig from 'src/config/jwt.config';
 
 @Module({
   imports: [
-    // Load configs
-    ConfigModule.forFeature(googleOauthconfig),
+    ConfigModule.forFeature(googleOauthConfig),
     ConfigModule.forFeature(jwtConfig),
-    TypeOrmModule.forFeature([User, AuthProvider]),
-
-    PassportModule,
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.getOrThrow<string>('jwt.secret'),
-        signOptions: {
-          expiresIn: parseInt(configService.getOrThrow<string>('jwt.expiresIn'), 10),
-        },
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '7d' },
       }),
     }),
   ],
-
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    GoogleStrategy,
-    JwtStrategy,
-    GoogleAuthGuard,
-  ],
-
+  providers: [AuthService, GoogleStrategy, JwtStrategy],
   exports: [JwtModule],
 })
 export class AuthModule {}

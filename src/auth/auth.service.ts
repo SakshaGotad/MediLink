@@ -1,101 +1,48 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './schemas/auth.entity';
-import { Repository } from 'typeorm';
-import { AuthProvider, AuthProviderType } from './schemas/auth_provider.entity';
-import { SignupDto } from './dto/signup.dto';
-import { UserRole, UserStatus } from './schemas/auth.entity';
-import * as bcrypt from 'bcrypt';
+/* eslint-disable prettier/prettier */
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
+import { User, UserStatus } from './schemas/user.schema';
+
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(AuthProvider)
-    private readonly authProviderRepository: Repository<AuthProvider>,
-    private readonly jwtService: JwtService,
+    @InjectModel(User.name) private userModel: Model<User>,
+    private jwtService: JwtService,
   ) {}
 
-  async signup(dto: SignupDto) {
-    const { email, password } = dto;
-
-    const existingProvider = await this.authProviderRepository.findOne({
-      where: {
-        provider: AuthProviderType.EMAIL,
-        provider_user_id: email,
-      },
-    });
-
-    if (existingProvider) {
-      throw new BadRequestException('Email already registered');
-    }
-
-    // Simplified and ensured safe handling of bcrypt.hash
-    let passwordHash: string;
-    try {
-      passwordHash = await bcrypt.hash(password, 10);
-    } catch {
-      throw new Error('Error hashing password');
-    }
-
-    const user = this.userRepository.create({
-      email: email,
-      password: passwordHash,
-      role: UserRole.PATIENT,
-      state: UserStatus.ONBOARDING,
-    });
-
-    await this.userRepository.save(user);
-
-    const authProvider = this.authProviderRepository.create({
-      user_id: user.id,
-      provider: AuthProviderType.EMAIL,
-      provider_user_id: email,
-      password_hash: passwordHash,
-    });
-
-    await this.authProviderRepository.save(authProvider);
-    return {
-      message: 'Signup successful',
-      user_id: user.id,
-    };
-  }
-
   async handleGoogleOauth(oauthUser: {
-    provider: string;
-    provider_user_id: string;
+    googleId: string;
     email: string;
+    name?: string;
+    picture?: string;
   }) {
-    let user = await this.userRepository.findOne({
-      where: { email: oauthUser.email },
-    });
-
+    let user = await this.userModel.findOne({ googleId: oauthUser.googleId });
+  
     if (!user) {
-      user = this.userRepository.create({
+      user = await this.userModel.create({
+        googleId: oauthUser.googleId,
         email: oauthUser.email,
-        state: UserStatus.ONBOARDING,
+        status: UserStatus.ONBOARDING,
       });
-      await this.userRepository.save(user);
     }
-
-    const payload = {
-      sub: user.id,
+  
+    const token = this.jwtService.sign({
+      sub: user._id,
       role: user.role,
-    };
-
-    const accessToken = this.jwtService.sign(payload);
-
+      status: user.status,
+    });
+  
     return {
-      accessToken,
+      accessToken: token,
       user: {
-        id: user.id,
-        state: user.state, // Replaced 'status' with 'state'
+        id: user._id,
+        email: user.email,
         role: user.role,
+        status: user.status,
       },
     };
   }
+  
 }

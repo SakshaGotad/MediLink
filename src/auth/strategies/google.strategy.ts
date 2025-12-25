@@ -22,17 +22,21 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   validate(
     accessToken: string,
     refreshToken: string,
-    profile: { id: string; emails: { value: string }[] }, // Added explicit type
+    profile: {
+      id: string;
+      emails: { value: string }[];
+      displayName?: string;
+      photos?: { value: string }[];
+    },
     done: VerifyCallback,
   ) {
-    const { id, emails } = profile;
-
     const user = {
-      provider: 'GOOGLE',
-      provider_user_id: id,
-      email: emails?.[0]?.value,
+      googleId: profile.id,
+      email: profile.emails?.[0]?.value,
+      name: profile.displayName,
+      picture: profile.photos?.[0]?.value,
     };
 
-    done(null, user); // Removed unnecessary await
+    done(null, user);
   }
 }
