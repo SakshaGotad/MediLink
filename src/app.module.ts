@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 // import { UsersModule } from './users/users.module';
-// import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -30,7 +30,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
     }),
     // UsersModule,
-    // AuthModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
