@@ -14,7 +14,7 @@ export enum UserRole {
   DOCTOR = 'DOCTOR',
 }
 
-export enum UserState {
+export enum UserStatus {
   ONBOARDING = 'ONBOARDING',
   ACTIVE = 'ACTIVE',
   PENDING_VERIFICATION = 'PENDING_VERIFICATION',
@@ -36,8 +36,8 @@ export class User {
   @Column({ type: 'enum', enum: UserRole })
   role: UserRole;
 
-  @Column({ type: 'enum', enum: UserState })
-  state: UserState;
+  @Column({ type: 'enum', enum: UserStatus })
+  state: UserStatus;
 
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;

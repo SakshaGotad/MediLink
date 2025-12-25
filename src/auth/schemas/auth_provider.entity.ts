@@ -1,23 +1,28 @@
 /* eslint-disable prettier/prettier */
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./auth.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from './auth.entity';
 
 export enum AuthProviderType {
   EMAIL = 'EMAIL',
   GOOGLE = 'GOOGLE',
 }
 
-
-
-@Entity({name: 'auth_providers'})
+@Entity({ name: 'auth_providers' })
 @Index(['provider', 'provider_user_id'], { unique: true })
 export class AuthProvider {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({ type: 'uuid' })
+  @Column({ type: 'uuid' })
   user_id: string;
-
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
@@ -29,7 +34,6 @@ export class AuthProvider {
   })
   provider: AuthProviderType;
 
-
   @Column({ type: 'varchar', length: 255 })
   provider_user_id: string;
 
@@ -38,5 +42,4 @@ export class AuthProvider {
 
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
-
 }
