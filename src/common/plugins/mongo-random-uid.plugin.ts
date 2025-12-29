@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import mongoose, { CallbackWithoutResultAndOptionalError } from 'mongoose';
+import mongoose from 'mongoose';
 import { RandomUIDUtils } from '../utils/gen-random-uids';
 
 export const randomUidPlugin = (prefix: string) => {
@@ -12,14 +11,10 @@ export const randomUidPlugin = (prefix: string) => {
       },
     });
 
-    schema.pre(
-      'validate',
-      function (this: any, next: CallbackWithoutResultAndOptionalError) {
-        if (!this.uid) {
-          this.uid = RandomUIDUtils.generateRandomUid(prefix);
-        }
-        next();
-      },
-    );
+    schema.pre('validate', function () {
+      if (!this.uid) {
+        this.uid = RandomUIDUtils.generateRandomUid(prefix);
+      }
+    });
   };
 };
