@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { ProfileModule } from './profile/profile.module';
+import { AvailabilityModule } from './availability/availability.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ProfileModule } from './profile/profile.module';
     AuthModule,
     OnboardingModule,
     ProfileModule,
+    AvailabilityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

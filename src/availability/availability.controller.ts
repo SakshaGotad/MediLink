@@ -1,0 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable prettier/prettier */
+import { Body, Controller, Post, UseGuards,Request, Get, Req } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/google-auth/jwt-auth.guard';
+import { AvailabilityService } from './availability.service';
+import { CreateAvailabilityDto } from './dto/create-availability.dto';
+
+@Controller('availability')
+@UseGuards(JwtAuthGuard)
+export class AvailabilityController {
+    constructor(private readonly availabilityService: AvailabilityService) {}
+
+    @Post()
+    async createAvailability(@Request() req, @Body() createDto: CreateAvailabilityDto) {
+        return this.availabilityService.createAvailability(req.user.userId, createDto);
+    }
+
+
+  @Get(':doctorId')
+  getDoctorAvailability(@Req() req) {
+    return this.availabilityService.getDoctorAvailability(req.params.doctorId);
+  }
+
+}
