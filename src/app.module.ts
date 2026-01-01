@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { ProfileModule } from './profile/profile.module';
 import { AvailabilityModule } from './availability/availability.module';
+import { AppointmentModule } from './appointment/appointment.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -21,11 +23,20 @@ import { AvailabilityModule } from './availability/availability.module';
         uri: configService.get<string>('MONGO_URI'),
       }),
     }),
+    ThrottlerModule.forRoot({
+     throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ]
+    }),
     // UsersModule,
     AuthModule,
     OnboardingModule,
     ProfileModule,
     AvailabilityModule,
+    AppointmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
