@@ -1,0 +1,67 @@
+# ======================
+# 🚀 Java / Spring Boot
+# ======================
+target/
+*.log
+
+# Keep target inside src (optional)
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# ======================
+# 🧠 IDE Files
+# ======================
+
+## IntelliJ
+.idea/
+*.iws
+*.iml
+*.ipr
+
+## Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+## VS Code
+.vscode/
+
+# ======================
+# 🌐 Frontend (Next.js)
+# ======================
+node_modules/
+.next/
+out/
+dist/
+build/
+
+# ======================
+# 🔐 Environment
+# ======================
+.env
+.env.local
+.env.*.local
+
+# ======================
+# 🖥 OS Files
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# 📦 Logs
+# ======================
+logs/
+*.log
+
+# ======================
+# 🐳 Docker (optional)
+# ======================
+docker-data/
