@@ -7,6 +7,7 @@
 		<groupId>com.medilink</groupId>
 		<artifactId>medilink</artifactId>
 		<version>1.0.0</version>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.medilink</groupId>
@@ -25,8 +26,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-kafka</artifactId>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
 		<!-- FIXED -->
