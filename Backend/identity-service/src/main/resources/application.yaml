@@ -1,7 +1,29 @@
-spring:
-  application:
-    name: identity-service
+server:
+  port: ${IDENTITY_PORT}
 
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+spring:
+
+  name: identity-service
+  datasource:
+    url: jdbc:postgresql://db.kclbvdbuvakxggfriaxa.supabase.co:5432/postgres?sslmode=require
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # use 'validate' in production later
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
