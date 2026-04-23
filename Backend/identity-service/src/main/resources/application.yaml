@@ -2,7 +2,6 @@ server:
   port: ${IDENTITY_PORT}
 
 spring:
-
   name: identity-service
   datasource:
     url: jdbc:postgresql://aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?sslmode=require
@@ -12,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # use 'validate' in production later
+      ddl-auto: update # use 'validate' in production later
     show-sql: true
     properties:
       hibernate:
@@ -22,6 +21,7 @@ spring:
   sql:
     init:
       mode: always
+
 
 logging:
   level:
