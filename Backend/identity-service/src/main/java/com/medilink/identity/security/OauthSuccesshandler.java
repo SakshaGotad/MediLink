@@ -39,6 +39,6 @@ private final JwtService jwtService;
          System.out.println("User saved: " + savedUser.getEmail());
 
         // 🔥 TEMP: just redirect
-        response.sendRedirect("http://localhost:3000?email=" + email);
+        response.sendRedirect("http://localhost:3000?token=" + token);
     }
 }

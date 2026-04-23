@@ -3,6 +3,8 @@ package com.medilink.identity.controller;
 import com.medilink.identity.entity.*;
 import com.medilink.identity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -28,5 +30,10 @@ public class TestController {
         userRepository.save(user);
 
         return "User saved successfully!";
+    }
+
+     @GetMapping("/api/test")
+    public String test(Authentication authentication) {
+        return "Hello " + authentication.getName();
     }
 }
