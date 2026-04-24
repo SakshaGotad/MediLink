@@ -28,4 +28,14 @@ public class UserService {
         });
                 
     }
+
+    public User updateRole(String email, String role) {
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    user.setRole(Role.valueOf(role));
+
+    return userRepository.save(user);
+}
 }
