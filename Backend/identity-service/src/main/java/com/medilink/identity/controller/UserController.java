@@ -35,5 +35,5 @@ public class UserController {
         String newToken = jwtService.generateToken(updatedUser);
 
         return newToken;
-    }
+    } 
 }
