@@ -10,6 +10,10 @@ import com.medilink.identity.repository.DoctorProfileRepository;
 import com.medilink.identity.repository.PatientProfileRepository;
 import com.medilink.identity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +28,10 @@ public class ProfileService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+                 if (doctorRepo.findByUser(user).isPresent()) {
+        throw new RuntimeException("Doctor profile already exists");
+    }
 
         DoctorProfile profile = DoctorProfile.builder()
                 .specialization(req.getSpecialization())
@@ -62,4 +70,49 @@ public class ProfileService {
         return patientRepo.save(profile);
     }
 
+    public DoctorProfile updateDoctorProfile(
+        UUID doctorId,
+        CreateDoctorProfileRequest request,
+        Authentication auth
+    ){
+        DoctorProfile doctor = doctorRepo.findById(doctorId)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+        if (!doctor.getUser().getEmail().equals(auth.getName())) {
+            throw new RuntimeException("You are not authorized to update this profile");
+        }
+
+        doctor.setSpecialization(request.getSpecialization());
+        doctor.setExperience(request.getExperience());
+        doctor.setFee(request.getFee());
+        doctor.setQualification(request.getQualification());
+        doctor.setLicenseNumber(request.getLicenseNumber());
+        doctor.setClinicName(request.getClinicName());
+        doctor.setClinicAddress(request.getClinicAddress());
+        doctor.setBio(request.getBio());
+
+        return doctorRepo.save(doctor);
+    }
+
+    public PatientProfile updatePatientProfile(
+        UUID patientId,
+        CreatePatientProfileRequest request,
+        Authentication auth
+    ){
+        PatientProfile patient = patientRepo.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+        if (!patient.getUser().getEmail().equals(auth.getName())) {
+            throw new RuntimeException("You are not authorized to update this profile");
+        }
+
+        patient.setAge(request.getAge());
+        patient.setGender(request.getGender());
+        patient.setPhone(request.getPhone());
+        patient.setAddress(request.getAddress());
+        patient.setBloodGroup(request.getBloodGroup());
+        patient.setMedicalHistory(request.getMedicalHistory());
+
+        return patientRepo.save(patient);
+    }
 }
