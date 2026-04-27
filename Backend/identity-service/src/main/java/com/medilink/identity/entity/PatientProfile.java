@@ -1,5 +1,7 @@
 package com.medilink.identity.entity;
 
+import java.util.UUID;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,8 +14,8 @@ import lombok.*;
 public class PatientProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     // 🔥 REQUIRED
     private int age;
