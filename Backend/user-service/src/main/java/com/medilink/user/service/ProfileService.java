@@ -70,6 +70,30 @@ public class ProfileService {
         return patientRepo.save(profile);
     }
 
+    public PatientProfile getPatientProfile( Authentication auth){
+        User user = userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole() != Role.PATIENT) {
+            throw new RuntimeException("Only patients can get patient profile");
+        }
+
+        return patientRepo.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Patient profile not found"));
+    }
+
+    public DoctorProfile getDoctorProfile(Authentication auth){
+        User user = userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole() != Role.DOCTOR) {
+            throw new RuntimeException("Only doctors can get doctor profile");
+        }
+
+        return doctorRepo.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Doctor profile not found"));
+    }
+
     public DoctorProfile updateDoctorProfile(
         UUID doctorId,
         CreateDoctorProfileRequest request,
