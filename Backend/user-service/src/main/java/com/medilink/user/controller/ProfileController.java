@@ -1,8 +1,8 @@
-package com.medilink.identity.controller;
+package com.medilink.user.controller;
 
-import com.medilink.identity.dto.*;
-import com.medilink.identity.entity.*;
-import com.medilink.identity.service.ProfileService;
+import com.medilink.user.dto.*;
+import com.medilink.user.entity.*;
+import com.medilink.user.service.ProfileService;
 
 import java.util.UUID;
 
