@@ -1,14 +1,14 @@
-package com.medilink.identity.service;
+package com.medilink.user.service;
 
-import com.medilink.identity.dto.CreateDoctorProfileRequest;
-import com.medilink.identity.dto.CreatePatientProfileRequest;
-import com.medilink.identity.entity.DoctorProfile;
-import com.medilink.identity.entity.PatientProfile;
-import com.medilink.identity.entity.Role;
-import com.medilink.identity.entity.User;
-import com.medilink.identity.repository.DoctorProfileRepository;
-import com.medilink.identity.repository.PatientProfileRepository;
-import com.medilink.identity.repository.UserRepository;
+import com.medilink.user.dto.CreateDoctorProfileRequest;
+import com.medilink.user.dto.CreatePatientProfileRequest;
+import com.medilink.user.entity.DoctorProfile;
+import com.medilink.user.entity.PatientProfile;
+import com.medilink.user.entity.Role;
+import com.medilink.user.entity.User;
+import com.medilink.user.repository.DoctorProfileRepository;
+import com.medilink.user.repository.PatientProfileRepository;
+import com.medilink.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
