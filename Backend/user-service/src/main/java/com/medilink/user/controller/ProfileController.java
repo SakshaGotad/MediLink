@@ -1,8 +1,8 @@
-package com.medilink.identity.controller;
+package com.medilink.user.controller;
 
-import com.medilink.identity.dto.*;
-import com.medilink.identity.entity.*;
-import com.medilink.identity.service.ProfileService;
+import com.medilink.user.dto.*;
+import com.medilink.user.entity.*;
+import com.medilink.user.service.ProfileService;
 
 import java.util.UUID;
 
@@ -13,6 +13,9 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -41,6 +44,16 @@ public class ProfileController {
             Authentication auth
     ) {
         return profileService.createPatientProfile(auth.getName(), request);
+    }
+
+    @GetMapping("/patient/profile")
+    public PatientProfile getPatientProfile( Authentication auth){
+        return profileService.getPatientProfile(auth);
+    }
+
+    @GetMapping("/doctor/profile")
+    public DoctorProfile getDoctorProfile( Authentication auth){
+        return profileService.getDoctorProfile(auth);
     }
 
     @PutMapping("/doctor/profile/{doctorId}")

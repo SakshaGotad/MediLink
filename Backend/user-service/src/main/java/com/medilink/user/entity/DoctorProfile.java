@@ -1,4 +1,4 @@
-package com.medilink.identity.entity;
+package com.medilink.user.entity;
 
 import java.util.UUID;
 

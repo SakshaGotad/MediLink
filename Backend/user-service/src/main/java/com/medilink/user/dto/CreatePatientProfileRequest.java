@@ -1,4 +1,4 @@
-package com.medilink.identity.dto;
+package com.medilink.user.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
