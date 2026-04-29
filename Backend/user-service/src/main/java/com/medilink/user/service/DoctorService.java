@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import com.medilink.user.dto.DoctorResponse;
 import com.medilink.user.entity.DoctorProfile;
+import com.medilink.user.exception.ResourceNotFoundException;
 import com.medilink.user.repository.DoctorProfileRepository;
 
 @Service
+@Slf4j
 public class DoctorService {
     private final DoctorProfileRepository doctorRepo;
 
@@ -19,6 +22,7 @@ public class DoctorService {
     }
 
     public List<DoctorResponse> getAllDoctors(String specialization, String sort){
+        log.info("Fetching all doctors with specialization: {} and sort: {}", specialization, sort);
         List<DoctorProfile> doctors;
     
         // filter 
@@ -40,9 +44,13 @@ public class DoctorService {
     }
 
       public DoctorResponse getDoctorById(UUID id) {
+        log.info("Fetching doctor profile with id: {}", id);
 
         DoctorProfile doctor = doctorRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+                .orElseThrow(() -> {
+                    log.warn("Doctor profile not found for id: {}", id);
+                    return new ResourceNotFoundException("Doctor not found  " );
+                });
 
         return mapToResponse(doctor);
     }
