@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 import com.medilink.appointment.enums.AppointmentStatus;
+import com.medilink.appointment.enums.AppointmentType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,7 +59,7 @@ public class Appointment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Appointment type;
+    private AppointmentType type;
 
      private String notes;
 

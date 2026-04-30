@@ -1,6 +1,6 @@
 package com.medilink.appointment.dto;
 
-import com.medilink.appointment.entity.Appointment;
+import com.medilink.appointment.enums.AppointmentType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -21,7 +21,7 @@ public class CreateAppointmentRequest {
     private LocalTime appointmentTime;
 
     @NotNull
-    private Appointment type;
+    private AppointmentType type;
 
     private String notes;
 }

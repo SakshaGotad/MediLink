@@ -28,8 +28,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .existsByDoctorIdAndAppointmentDateAndAppointmentTime(
                         request.getDoctorId(),
                         request.getAppointmentDate(),
-                        request.getAppointmentTime()
-                );
+                        request.getAppointmentTime());
 
         if (exists) {
             throw new RuntimeException("Slot already booked");
@@ -69,10 +68,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentResponse updateStatus(UUID appointmentId, String status) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
-        
+
         appointment.setStatus(AppointmentStatus.valueOf(status.toUpperCase()));
         Appointment updated = appointmentRepository.save(appointment);
-        
+
         return mapToResponse(updated);
     }
 

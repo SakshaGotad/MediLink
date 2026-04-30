@@ -1,5 +1,6 @@
 package com.medilink.appointment.dto;
 
+import com.medilink.appointment.entity.Appointment;
 import com.medilink.appointment.enums.AppointmentStatus;
 import com.medilink.appointment.enums.AppointmentType;
 import lombok.Builder;
