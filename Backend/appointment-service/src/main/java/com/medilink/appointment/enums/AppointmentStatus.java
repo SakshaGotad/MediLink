@@ -1,5 +1,8 @@
 package com.medilink.appointment.enums;
 
-public class AppointmentStatus {
-    
+public enum AppointmentStatus {
+    PENDING,
+    CONFIRMED,
+    CANCELLED,
+    COMPLETED
 }
