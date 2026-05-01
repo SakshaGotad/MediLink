@@ -1,6 +1,9 @@
 package com.medilink.user.service;
 
 import com.medilink.user.dto.CreateDoctorProfileRequest;
+import com.medilink.user.exception.ProfileAlreadyExistsException;
+import com.medilink.user.exception.ResourceNotFoundException;
+import com.medilink.user.exception.UnauthorizedAccessException;
 import com.medilink.user.dto.CreatePatientProfileRequest;
 import com.medilink.user.entity.DoctorProfile;
 import com.medilink.user.entity.PatientProfile;
@@ -27,10 +30,10 @@ public class ProfileService {
     public DoctorProfile createDoctorProfile(String email, CreateDoctorProfileRequest req) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
                  if (doctorRepo.findByUser(user).isPresent()) {
-        throw new RuntimeException("Doctor profile already exists");
+        throw new ProfileAlreadyExistsException("Doctor profile already exists");
     }
 
         DoctorProfile profile = DoctorProfile.builder()
@@ -51,10 +54,10 @@ public class ProfileService {
     public PatientProfile createPatientProfile(String email, CreatePatientProfileRequest req) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getRole() != Role.PATIENT) {
-            throw new RuntimeException("Only patients can create patient profile");
+            throw new UnauthorizedAccessException("Only patients can create patient profile");
         }
 
         PatientProfile profile = PatientProfile.builder()
@@ -72,26 +75,26 @@ public class ProfileService {
 
     public PatientProfile getPatientProfile( Authentication auth){
         User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getRole() != Role.PATIENT) {
-            throw new RuntimeException("Only patients can get patient profile");
+            throw new UnauthorizedAccessException("Only patients can get patient profile");
         }
 
         return patientRepo.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Patient profile not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient profile not found"));
     }
 
     public DoctorProfile getDoctorProfile(Authentication auth){
         User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getRole() != Role.DOCTOR) {
-            throw new RuntimeException("Only doctors can get doctor profile");
+            throw new UnauthorizedAccessException("Only doctors can get doctor profile");
         }
 
         return doctorRepo.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Doctor profile not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor profile not found"));
     }
 
     public DoctorProfile updateDoctorProfile(
@@ -100,10 +103,10 @@ public class ProfileService {
         Authentication auth
     ){
         DoctorProfile doctor = doctorRepo.findById(doctorId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
 
         if (!doctor.getUser().getEmail().equals(auth.getName())) {
-            throw new RuntimeException("You are not authorized to update this profile");
+            throw new UnauthorizedAccessException("You are not authorized to update this profile");
         }
 
         doctor.setSpecialization(request.getSpecialization());
@@ -124,10 +127,10 @@ public class ProfileService {
         Authentication auth
     ){
         PatientProfile patient = patientRepo.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 
         if (!patient.getUser().getEmail().equals(auth.getName())) {
-            throw new RuntimeException("You are not authorized to update this profile");
+            throw new UnauthorizedAccessException("You are not authorized to update this profile");
         }
 
         patient.setAge(request.getAge());
