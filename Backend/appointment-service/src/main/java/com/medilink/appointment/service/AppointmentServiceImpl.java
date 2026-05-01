@@ -14,6 +14,7 @@ import com.medilink.appointment.entity.DoctorAvailability;
 import com.medilink.appointment.repository.AppointmentRepository;
 import com.medilink.appointment.repository.DoctorAvailabilityRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,6 +24,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final DoctorAvailabilityRepository doctorAvailabilityRepository;
 
+    @Transactional
     @Override
     public AppointmentResponse createAppointment(UUID patientId, CreateAppointmentRequest request) {
 
@@ -44,7 +46,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             );
 
             long count = appointmentRepository
-            .countByDoctorIdAndAppointmentDateAndAppointmentTime(
+            .countWithLock(
                     request.getDoctorId(),
                     request.getAppointmentDate(),
                     request.getAppointmentTime()
