@@ -10,7 +10,9 @@ import com.medilink.appointment.dto.AppointmentResponse;
 import com.medilink.appointment.enums.AppointmentStatus;
 import com.medilink.appointment.dto.CreateAppointmentRequest;
 import com.medilink.appointment.entity.Appointment;
+import com.medilink.appointment.entity.DoctorAvailability;
 import com.medilink.appointment.repository.AppointmentRepository;
+import com.medilink.appointment.repository.DoctorAvailabilityRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,21 +21,38 @@ import lombok.RequiredArgsConstructor;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
+    private final DoctorAvailabilityRepository doctorAvailabilityRepository;
 
     @Override
     public AppointmentResponse createAppointment(UUID patientId, CreateAppointmentRequest request) {
 
-        // 🔴 Step 1: Check slot availability
-        boolean exists = appointmentRepository
-                .existsByDoctorIdAndAppointmentDateAndAppointmentTime(
-                        request.getDoctorId(),
-                        request.getAppointmentDate(),
-                        request.getAppointmentTime());
+        List<DoctorAvailability> availabilities = doctorAvailabilityRepository.findByDoctorIdAndDate(
+                request.getDoctorId(),
+                request.getAppointmentDate());
 
-        if (exists) {
-            throw new RuntimeException("Slot already booked");
-        }
+        if (availabilities.isEmpty()) {
+        throw new RuntimeException("Doctor is not available on this date");
+    }
+ DoctorAvailability matched = availabilities.stream()
+            .filter(a ->
+                    !request.getAppointmentTime().isBefore(a.getStartTime()) &&
+                    request.getAppointmentTime().isBefore(a.getEndTime())
+            )
+            .findFirst()
+            .orElseThrow(() ->
+                    new RuntimeException("Selected time is outside doctor availability")
+            );
 
+            long count = appointmentRepository
+            .countByDoctorIdAndAppointmentDateAndAppointmentTime(
+                    request.getDoctorId(),
+                    request.getAppointmentDate(),
+                    request.getAppointmentTime()
+            );
+
+             if (count >= matched.getMaxPatientsPerSlot()) {
+        throw new RuntimeException("Slot is full");
+    }
         // 🟢 Step 2: Create entity
         Appointment appointment = Appointment.builder()
                 .patientId(patientId)

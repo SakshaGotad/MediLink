@@ -24,5 +24,5 @@ public interface DoctorAvailabilityRepository
     UUID doctorId,
     LocalDate date,
     LocalTime time
-);
+);            
 }
