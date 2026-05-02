@@ -27,9 +27,9 @@ public class ProfileService {
     private final DoctorProfileRepository doctorRepo;
     private final PatientProfileRepository patientRepo;
 
-    public DoctorProfile createDoctorProfile(String email, CreateDoctorProfileRequest req) {
+    public DoctorProfile createDoctorProfile(Authentication auth, CreateDoctorProfileRequest req) {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
                  if (doctorRepo.findByUser(user).isPresent()) {
@@ -51,9 +51,9 @@ public class ProfileService {
         return doctorRepo.save(profile);
     }
 
-    public PatientProfile createPatientProfile(String email, CreatePatientProfileRequest req) {
+    public PatientProfile createPatientProfile(Authentication auth, CreatePatientProfileRequest req) {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getRole() != Role.PATIENT) {

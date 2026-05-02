@@ -28,34 +28,37 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    // 👨‍⚕️ Doctor
+    // Create doctor profile - after registration
     @PostMapping("/doctor/profile")
     public DoctorProfile createDoctorProfile(
             @Valid @RequestBody CreateDoctorProfileRequest request,
             Authentication auth
     ) {
-        return profileService.createDoctorProfile(auth.getName(), request);
+        return profileService.createDoctorProfile(auth, request);
     }
 
-    // 🧑 Patient
+    // create patient profile - after registration.
     @PostMapping("/patient/profile")
     public PatientProfile createPatientProfile(
             @Valid @RequestBody CreatePatientProfileRequest request,
             Authentication auth
     ) {
-        return profileService.createPatientProfile(auth.getName(), request);
+        return profileService.createPatientProfile(auth, request);
     }
 
+    // get patient profile of currently logged in user (own profile) 
     @GetMapping("/patient/profile")
     public PatientProfile getPatientProfile( Authentication auth){
         return profileService.getPatientProfile(auth);
     }
 
+    // get doctor profile of currently logged in user (own profile) 
     @GetMapping("/doctor/profile")
     public DoctorProfile getDoctorProfile( Authentication auth){
         return profileService.getDoctorProfile(auth);
     }
 
+    // update doctor profile of currently logged in user 
     @PutMapping("/doctor/profile/{doctorId}")
     public DoctorProfile updateDoctorProfile(
         @PathVariable UUID doctorId,
@@ -65,6 +68,7 @@ public class ProfileController {
         return profileService.updateDoctorProfile(doctorId, request, auth);
     }
 
+    // update patient profile of currently logged in user 
     @PutMapping("/patient/profile/{patientId}")
     public PatientProfile updatePatientProfile(@PathVariable UUID patientId, @RequestBody CreatePatientProfileRequest request, Authentication auth) {
         return profileService.updatePatientProfile(patientId, request, auth);

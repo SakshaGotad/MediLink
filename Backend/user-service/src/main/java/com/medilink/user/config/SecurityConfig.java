@@ -22,8 +22,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
-                        .requestMatchers("/api/patient/**").hasRole("PATIENT"))
+                        .requestMatchers("/api/doctor/**").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/patient/**").hasAuthority("PATIENT"))
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -36,7 +36,6 @@ private final JwtService jwtService;
 
        User savedUser = userService.findOrCreateUser(email, name);
         String token = jwtService.generateToken(savedUser);
-         System.out.println("User saved: " + savedUser.getEmail());
 
         // 🔥 TEMP: just redirect
         response.sendRedirect("http://localhost:3000?token=" + token);
