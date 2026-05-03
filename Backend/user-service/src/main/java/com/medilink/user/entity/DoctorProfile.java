@@ -22,6 +22,12 @@ public class DoctorProfile {
     @NotBlank()
     private String specialization;
     
+    @NotBlank()
+    private String name;
+
+    @NotBlank()
+    private String email;
+    
     private int experience;
 
     private double fee;
