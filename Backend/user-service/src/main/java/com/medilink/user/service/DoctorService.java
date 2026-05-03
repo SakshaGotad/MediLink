@@ -59,6 +59,8 @@ public class DoctorService {
     private DoctorResponse mapToResponse(DoctorProfile profile) {
         return DoctorResponse.builder()
                 .id(profile.getId())
+                .name(profile.getName())
+                .email(profile.getEmail())
                 .specialization(profile.getSpecialization())
                 .experience(profile.getExperience())
                 .fee(profile.getFee())

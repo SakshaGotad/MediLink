@@ -11,6 +11,8 @@ import java.util.UUID;
 public class DoctorResponse {
 
     private UUID id;              // 🔥 important
+    private String name;
+    private String email;
     private String specialization;
     private int experience;
     private double fee;
