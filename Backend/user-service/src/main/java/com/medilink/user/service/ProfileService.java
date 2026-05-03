@@ -58,6 +58,8 @@ public class ProfileService {
         }
 
         PatientProfile profile = PatientProfile.builder()
+                .name(user.getName())
+                .email(user.getEmail())
                 .age(req.getAge())
                 .gender(req.getGender())
                 .phone(req.getPhone())
@@ -130,6 +132,8 @@ public class ProfileService {
             throw new RuntimeException("You are not authorized to update this profile");
         }
 
+        patient.setName(patient.getUser().getName());
+        patient.setEmail(patient.getUser().getEmail());
         patient.setAge(request.getAge());
         patient.setGender(request.getGender());
         patient.setPhone(request.getPhone());

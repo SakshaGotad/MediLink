@@ -75,6 +75,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         return mapToResponse(updated);
     }
 
+    @Override
+    public List<UUID> getDoctorPatientIds(UUID doctorId) {
+        return appointmentRepository.findDistinctPatientIdsByDoctorId(doctorId);
+    }
+
     private AppointmentResponse mapToResponse(Appointment appointment) {
         return AppointmentResponse.builder()
                 .id(appointment.getId())

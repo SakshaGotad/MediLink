@@ -14,5 +14,5 @@ public interface AppointmentService {
     List<AppointmentResponse> getDoctorAppointments(UUID doctorId);
 
     AppointmentResponse updateStatus(UUID appointmentId, String status);
-
+    List<UUID> getDoctorPatientIds(UUID doctorId);
 }

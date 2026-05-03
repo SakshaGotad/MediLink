@@ -60,6 +60,11 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/doctor/{doctorId}/patient-ids")
+    public ResponseEntity<List<UUID>> getDoctorPatientIds(@PathVariable UUID doctorId) {
+        return ResponseEntity.ok(appointmentService.getDoctorPatientIds(doctorId));
+    }
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<AppointmentResponse> updateStatus(
             @PathVariable UUID id,

@@ -19,4 +19,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findByPatientId(UUID patientId);
 
     List<Appointment> findByDoctorId(UUID doctorId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT DISTINCT a.patientId FROM Appointment a WHERE a.doctorId = :doctorId")
+    List<UUID> findDistinctPatientIdsByDoctorId(UUID doctorId);
+
 }
