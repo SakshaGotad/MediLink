@@ -21,6 +21,12 @@ public class DoctorProfile {
     // 🔥 REQUIRED
     @NotBlank()
     private String specialization;
+
+    @NotBlank()
+    private String name;
+
+    @NotBlank()
+    private String email;
     
     private int experience;
 

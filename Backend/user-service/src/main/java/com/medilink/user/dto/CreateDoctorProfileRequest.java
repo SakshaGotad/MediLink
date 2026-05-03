@@ -13,6 +13,12 @@ public class CreateDoctorProfileRequest {
     private String specialization;
 
     @NotNull
+    private String name;
+
+    @NotNull
+    private String email;
+
+    @NotNull
     private Integer experience;
 
     @NotNull
