@@ -20,6 +20,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
-    razorpay:
-      key: ${RAZORPAY_KEY}
-      secret: ${RAZORPAY_SECRET}
+  razorpay:
+    key: ${RAZORPAY_KEY}
+    secret: ${RAZORPAY_SECRET}
+    webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
