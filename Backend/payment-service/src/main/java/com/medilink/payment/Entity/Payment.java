@@ -34,4 +34,6 @@ public class Payment {
     private String razorpayOrderId;
 
     private LocalDateTime createdAt;
+
+    private LocalDateTime expiresAt;
 }
