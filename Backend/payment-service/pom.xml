@@ -47,6 +47,11 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>com.razorpay</groupId>
+			<artifactId>razorpay-java</artifactId>
+			<version>1.4.3</version>
+		</dependency>
 		<!-- CLEAN TEST -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
