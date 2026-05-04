@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import com.medilink.payment.Entity.Payment;
-import com.medilink.payment.Enums.PaymentStatus;
-import com.medilink.payment.Repository.PaymentRepository;
 import com.medilink.payment.dto.CreatePaymentRequest;
 import com.medilink.payment.dto.PaymentResponse;
+import com.medilink.payment.entity.Payment;
+import com.medilink.payment.enums.PaymentStatus;
+import com.medilink.payment.repository.PaymentRepository;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;

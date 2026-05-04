@@ -1,6 +1,9 @@
-package com.medilink.payment.Entity;
+package com.medilink.payment.entity;
 import java.time.LocalDateTime;
-import com.medilink.payment.Enums.PaymentStatus;
+import java.util.UUID;
+
+import com.medilink.payment.enums.PaymentStatus;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,12 +20,13 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
-    private String appointmentId;
-    private String patientId;
+    private UUID appointmentId;
+    private UUID patientId;
 
     private Long amount;
+
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
