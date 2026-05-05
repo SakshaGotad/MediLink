@@ -16,6 +16,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
             LocalTime appointmentTime
     );
 
+    long countByDoctorIdAndAppointmentDateAndAppointmentTime(
+            UUID doctorId,
+            LocalDate appointmentDate,
+            LocalTime appointmentTime
+    );
+
     List<Appointment> findByPatientId(UUID patientId);
 
     List<Appointment> findByDoctorId(UUID doctorId);

@@ -1,5 +1,6 @@
 package com.medilink.appointment.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,6 +23,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentResponse createAppointment(UUID patientId, CreateAppointmentRequest request) {
+ 
+        // 1.1: Date/Time must be in future
+        LocalDateTime appointmentDateTime = LocalDateTime.of(request.getAppointmentDate(), request.getAppointmentTime());
+        if (appointmentDateTime.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Appointment must be in the future");
+        }
 
         // 🔴 Step 1: Check slot availability
         boolean exists = appointmentRepository
