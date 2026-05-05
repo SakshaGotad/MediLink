@@ -17,6 +17,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
             LocalTime appointmentTime
     );
 
+    boolean existsByPatientIdAndAppointmentDateAndAppointmentTime(
+            UUID patientId,
+            LocalDate appointmentDate,
+            LocalTime appointmentTime
+    );
+
     long countByDoctorIdAndAppointmentDateAndAppointmentTime(
             UUID doctorId,
             LocalDate appointmentDate,

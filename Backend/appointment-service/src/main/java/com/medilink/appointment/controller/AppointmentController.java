@@ -80,4 +80,6 @@ public class AppointmentController {
                 appointmentService.updateStatus(id, status)
         );
     }
+
+  
 }
