@@ -59,6 +59,7 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
         List<DoctorAvailability> ranges =
                 availabilityRepository.findByDoctorIdAndDate(doctorId, date);
 
+
         List<SlotResponse> result = new ArrayList<>();
 
         for (DoctorAvailability range : ranges) {

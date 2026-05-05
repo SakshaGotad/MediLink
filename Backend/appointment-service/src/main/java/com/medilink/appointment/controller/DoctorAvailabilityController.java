@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -23,10 +24,11 @@ public class DoctorAvailabilityController {
 
     @PostMapping
     public ResponseEntity<String> createAvailability(
-            @RequestBody @Valid CreateAvailabilityRequest request
+            @RequestBody @Valid CreateAvailabilityRequest request,
+            Authentication authentication
     ) {
 
-        UUID doctorId = UUID.randomUUID(); // TEMP
+        UUID doctorId = UUID.fromString(authentication.getName());
 
         availabilityService.createAvailability(doctorId, request);
 

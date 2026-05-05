@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .requestMatchers("/appointments/patient").hasRole("PATIENT")
                 .requestMatchers("/appointments/doctor/**").hasRole("DOCTOR")
                 .requestMatchers(HttpMethod.PATCH, "/appointments/*/status").hasRole("DOCTOR")
+                .requestMatchers("/availability/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
