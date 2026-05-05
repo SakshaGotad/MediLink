@@ -23,13 +23,40 @@ import lombok.RequiredArgsConstructor;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
+    private final com.medilink.appointment.client.PaymentClient paymentClient;
+
     @Override
     public AppointmentResponse createAppointment(UUID patientId, CreateAppointmentRequest request) {
- 
+
+        // 🔴 Step 1: Validations
+
         // 1.1: Date/Time must be in future
-        LocalDateTime appointmentDateTime = LocalDateTime.of(request.getAppointmentDate(), request.getAppointmentTime());
+        LocalDateTime appointmentDateTime = LocalDateTime.of(request.getAppointmentDate(),
+                request.getAppointmentTime());
         if (appointmentDateTime.isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Appointment must be in the future");
+        }
+
+        // 1.3: Check doctor availability
+        boolean doctorSlotTaken = appointmentRepository
+                .existsByDoctorIdAndAppointmentDateAndAppointmentTime(
+                        request.getDoctorId(),
+                        request.getAppointmentDate(),
+                        request.getAppointmentTime());
+
+        if (doctorSlotTaken) {
+            throw new RuntimeException("Doctor is already booked for this slot");
+        }
+
+        // 1.4: Check patient availability
+        boolean patientSlotTaken = appointmentRepository
+                .existsByPatientIdAndAppointmentDateAndAppointmentTime(
+                        patientId,
+                        request.getAppointmentDate(),
+                        request.getAppointmentTime());
+
+        if (patientSlotTaken) {
+            throw new RuntimeException("Patient already has an appointment at this time");
         }
 
         // 🟢 Step 2: Create entity
@@ -44,13 +71,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         // 🟢 Step 3: Save
-        System.out.println("Saving appointment for patientId: " + patientId + ", doctorId: " + appointment.getDoctorId());
+        System.out
+                .println("Saving appointment for patientId: " + patientId + ", doctorId: " + appointment.getDoctorId());
         Appointment saved = appointmentRepository.save(appointment);
 
-        //  Call Payment Service
+        // 🔵 Step 4: Call Payment Service
         CreatePaymentRequest paymentRequest = new CreatePaymentRequest();
         paymentRequest.setAppointmentId(saved.getId());
         paymentRequest.setPatientId(patientId);
+        paymentRequest.setAmount(500L); // Default amount for now
+
+        paymentClient.createPayment(paymentRequest);
 
         return mapToResponse(saved);
 
@@ -68,11 +99,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentResponse> getDoctorAppointments(UUID doctorId, LocalDate date, PaymentStatus paymentStatus) {
-        System.out.println("Querying appointments for doctorId: " + doctorId + ", date: " + date + ", paymentStatus: " + paymentStatus);
+        System.out.println("Querying appointments for doctorId: " + doctorId + ", date: " + date + ", paymentStatus: "
+                + paymentStatus);
         List<Appointment> appointments;
-        
+
         if (date != null && paymentStatus != null) {
-            appointments = appointmentRepository.findByDoctorIdAndAppointmentDateAndPaymentStatus(doctorId, date, paymentStatus);
+            appointments = appointmentRepository.findByDoctorIdAndAppointmentDateAndPaymentStatus(doctorId, date,
+                    paymentStatus);
         } else if (date != null) {
             appointments = appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, date);
         } else if (paymentStatus != null) {
@@ -81,7 +114,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointments = appointmentRepository.findByDoctorId(doctorId);
         }
         System.out.println("Found " + appointments.size() + " appointments");
-        
+
         return appointments.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -102,6 +135,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<UUID> getDoctorPatientIds(UUID doctorId) {
         return appointmentRepository.findDistinctPatientIdsByDoctorId(doctorId);
     }
+
 
     private AppointmentResponse mapToResponse(Appointment appointment) {
         return AppointmentResponse.builder()
