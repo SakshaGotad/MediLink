@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.medilink.appointment.dto.AppointmentResponse;
 import com.medilink.appointment.enums.AppointmentStatus;
 import com.medilink.appointment.dto.CreateAppointmentRequest;
+import com.medilink.appointment.dto.CreatePaymentRequest;
 import com.medilink.appointment.entity.Appointment;
 import com.medilink.appointment.enums.PaymentStatus;
 import com.medilink.appointment.repository.AppointmentRepository;
@@ -39,13 +40,20 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .appointmentTime(request.getAppointmentTime())
                 .type(request.getType())
                 .notes(request.getNotes())
+                .status(AppointmentStatus.PENDING)
                 .build();
 
         // 🟢 Step 3: Save
         System.out.println("Saving appointment for patientId: " + patientId + ", doctorId: " + appointment.getDoctorId());
         Appointment saved = appointmentRepository.save(appointment);
 
+        //  Call Payment Service
+        CreatePaymentRequest paymentRequest = new CreatePaymentRequest();
+        paymentRequest.setAppointmentId(saved.getId());
+        paymentRequest.setPatientId(patientId);
+
         return mapToResponse(saved);
+
     }
 
     @Override
