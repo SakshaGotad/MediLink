@@ -18,6 +18,8 @@ public class PatientProfile {
     private UUID id;
 
     // 🔥 REQUIRED
+    private String name;
+    private String email;
     private int age;
     private String gender;
 

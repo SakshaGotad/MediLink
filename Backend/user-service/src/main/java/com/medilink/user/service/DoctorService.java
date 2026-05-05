@@ -11,14 +11,24 @@ import com.medilink.user.dto.DoctorResponse;
 import com.medilink.user.entity.DoctorProfile;
 import com.medilink.user.exception.ResourceNotFoundException;
 import com.medilink.user.repository.DoctorProfileRepository;
+import com.medilink.user.repository.PatientProfileRepository;
+import com.medilink.user.dto.PatientResponse;
+import com.medilink.user.entity.PatientProfile;
+import org.springframework.web.client.RestTemplate;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class DoctorService {
     private final DoctorProfileRepository doctorRepo;
+    private final PatientProfileRepository patientRepo;
+    private final RestTemplate restTemplate;
 
-    public DoctorService(DoctorProfileRepository doctorRepo) {
+    public DoctorService(DoctorProfileRepository doctorRepo, PatientProfileRepository patientRepo, RestTemplate restTemplate) {
         this.doctorRepo = doctorRepo;
+        this.patientRepo = patientRepo;
+        this.restTemplate = restTemplate;
     }
 
     public List<DoctorResponse> getAllDoctors(String specialization, String sort){
@@ -53,6 +63,45 @@ public class DoctorService {
                 });
 
         return mapToResponse(doctor);
+    }
+
+    public List<PatientResponse> getPatientsForDoctor(UUID doctorId) {
+        log.info("Fetching patients for doctor id: {}", doctorId);
+        
+        // 1. Call appointment-service to get unique patient IDs
+        String url = "http://localhost:8083/appointments/doctor/" + doctorId + "/patient-ids";
+        try {
+            UUID[] patientIdsArray = restTemplate.getForObject(url, UUID[].class);
+            if (patientIdsArray == null || patientIdsArray.length == 0) {
+                return Collections.emptyList();
+            }
+
+            List<UUID> patientIds = List.of(patientIdsArray);
+
+            // 2. Fetch patient profiles from database
+            List<PatientProfile> patients = patientRepo.findAllById(patientIds);
+
+            return patients.stream()
+                    .map(this::mapToPatientResponse)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error fetching patients from appointment-service", e);
+            return Collections.emptyList();
+        }
+    }
+
+    private PatientResponse mapToPatientResponse(PatientProfile profile) {
+        return PatientResponse.builder()
+                .id(profile.getId())
+                .name(profile.getName())
+                .email(profile.getEmail())
+                .age(profile.getAge())
+                .gender(profile.getGender())
+                .phone(profile.getPhone())
+                .bloodGroup(profile.getBloodGroup())
+                .medicalHistory(profile.getMedicalHistory())
+                .allergies(profile.getAllergies())
+                .build();
     }
 
 

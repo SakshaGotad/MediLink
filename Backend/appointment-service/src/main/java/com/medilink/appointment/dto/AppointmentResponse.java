@@ -3,6 +3,7 @@ package com.medilink.appointment.dto;
 import com.medilink.appointment.entity.Appointment;
 import com.medilink.appointment.enums.AppointmentStatus;
 import com.medilink.appointment.enums.AppointmentType;
+import com.medilink.appointment.enums.PaymentStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,5 +22,6 @@ public class AppointmentResponse {
     private LocalTime appointmentTime;
     private AppointmentStatus status;
     private AppointmentType type;
+    private PaymentStatus paymentStatus;
     private String notes;
 }
