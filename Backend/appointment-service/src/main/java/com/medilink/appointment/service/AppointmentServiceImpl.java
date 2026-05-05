@@ -30,17 +30,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new RuntimeException("Appointment must be in the future");
         }
 
-        // 🔴 Step 1: Check slot availability
-        boolean exists = appointmentRepository
-                .existsByDoctorIdAndAppointmentDateAndAppointmentTime(
-                        request.getDoctorId(),
-                        request.getAppointmentDate(),
-                        request.getAppointmentTime());
-
-        if (exists) {
-            throw new RuntimeException("Slot already booked");
-        }
-
         // 🟢 Step 2: Create entity
         Appointment appointment = Appointment.builder()
                 .patientId(patientId)

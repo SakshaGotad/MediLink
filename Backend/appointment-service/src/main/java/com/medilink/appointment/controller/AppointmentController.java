@@ -29,7 +29,7 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AppointmentResponse> createAppointment(
             @RequestBody @Valid CreateAppointmentRequest request,
             Authentication authentication
