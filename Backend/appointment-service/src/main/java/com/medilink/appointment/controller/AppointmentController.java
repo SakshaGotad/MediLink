@@ -27,7 +27,7 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AppointmentResponse> createAppointment(
             @RequestBody @Valid CreateAppointmentRequest request
     ) {
@@ -67,6 +67,17 @@ public class AppointmentController {
     ) {
         return ResponseEntity.ok(
                 appointmentService.updateStatus(id, status)
+        );
+    }
+
+    @GetMapping("/availability")
+    public ResponseEntity<Boolean> checkAvailability(
+            @RequestParam UUID doctorId,
+            @RequestParam java.time.LocalDate date,
+            @RequestParam java.time.LocalTime time
+    ) {
+        return ResponseEntity.ok(
+                appointmentService.checkAvailability(doctorId, date, time)
         );
     }
 }

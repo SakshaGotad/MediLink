@@ -14,5 +14,7 @@ public interface AppointmentService {
     List<AppointmentResponse> getDoctorAppointments(UUID doctorId);
 
     AppointmentResponse updateStatus(UUID appointmentId, String status);
+    
+    boolean checkAvailability(UUID doctorId, java.time.LocalDate date, java.time.LocalTime time);
 
 }
