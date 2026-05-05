@@ -1,5 +1,6 @@
 package com.medilink.appointment.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-
     @Override
     public AppointmentResponse createAppointment(UUID patientId, CreateAppointmentRequest request) {
  
@@ -65,8 +65,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentResponse> getDoctorAppointments(UUID doctorId) {
-        return appointmentRepository.findByDoctorId(doctorId).stream()
+    public List<AppointmentResponse> getDoctorAppointments(UUID doctorId, LocalDate date) {
+        List<Appointment> appointments;
+        if (date != null) {
+            appointments = appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, date);
+        } else {
+            appointments = appointmentRepository.findByDoctorId(doctorId);
+        }
+        
+        return appointments.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }

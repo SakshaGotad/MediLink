@@ -1,5 +1,6 @@
 package com.medilink.appointment.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public interface AppointmentService {
 
     List<AppointmentResponse> getPatientAppointments(UUID patientId);
 
-    List<AppointmentResponse> getDoctorAppointments(UUID doctorId);
+    List<AppointmentResponse> getDoctorAppointments(UUID doctorId, LocalDate date);
 
     AppointmentResponse updateStatus(UUID appointmentId, String status);
     List<UUID> getDoctorPatientIds(UUID doctorId);

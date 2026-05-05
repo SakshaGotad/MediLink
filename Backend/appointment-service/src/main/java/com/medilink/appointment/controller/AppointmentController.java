@@ -1,9 +1,11 @@
 package com.medilink.appointment.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +31,10 @@ public class AppointmentController {
 
     @PostMapping
     public ResponseEntity<AppointmentResponse> createAppointment(
-            @RequestBody @Valid CreateAppointmentRequest request
+            @RequestBody @Valid CreateAppointmentRequest request,
+            Authentication authentication
     ) {
-
-        // TEMP: replace with JWT later
-        UUID patientId = UUID.randomUUID();
+        UUID patientId = UUID.fromString(authentication.getName());
 
         return ResponseEntity.ok(
                 appointmentService.createAppointment(patientId, request)
@@ -42,26 +43,28 @@ public class AppointmentController {
 
 
     @GetMapping("/patient")
-    public ResponseEntity<List<AppointmentResponse>> getPatientAppointments() {
-
-        UUID patientId = UUID.randomUUID(); // TEMP
+    public ResponseEntity<List<AppointmentResponse>> getPatientAppointments(Authentication authentication) {
+        UUID patientId = UUID.fromString(authentication.getName());
 
         return ResponseEntity.ok(
                 appointmentService.getPatientAppointments(patientId)
         );
     }
 
-    @GetMapping("/doctor/{doctorId}")
+    @GetMapping("/doctor")
     public ResponseEntity<List<AppointmentResponse>> getDoctorAppointments(
-            @PathVariable UUID doctorId
+            Authentication authentication,
+            @RequestParam(required = false) LocalDate date
     ) {
+        UUID doctorId = UUID.fromString(authentication.getName());
         return ResponseEntity.ok(
-                appointmentService.getDoctorAppointments(doctorId)
+                appointmentService.getDoctorAppointments(doctorId, date)
         );
     }
 
-    @GetMapping("/doctor/{doctorId}/patient-ids")
-    public ResponseEntity<List<UUID>> getDoctorPatientIds(@PathVariable UUID doctorId) {
+    @GetMapping("/doctor/patient-ids")
+    public ResponseEntity<List<UUID>> getDoctorPatientIds(Authentication authentication) {
+        UUID doctorId = UUID.fromString(authentication.getName());
         return ResponseEntity.ok(appointmentService.getDoctorPatientIds(doctorId));
     }
 
