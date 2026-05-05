@@ -12,6 +12,7 @@ import com.medilink.appointment.dto.AppointmentResponse;
 import com.medilink.appointment.enums.AppointmentStatus;
 import com.medilink.appointment.dto.CreateAppointmentRequest;
 import com.medilink.appointment.entity.Appointment;
+import com.medilink.appointment.enums.PaymentStatus;
 import com.medilink.appointment.repository.AppointmentRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         // 🟢 Step 3: Save
+        System.out.println("Saving appointment for patientId: " + patientId + ", doctorId: " + appointment.getDoctorId());
         Appointment saved = appointmentRepository.save(appointment);
 
         return mapToResponse(saved);
@@ -48,19 +50,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentResponse> getPatientAppointments(UUID patientId) {
-        return appointmentRepository.findByPatientId(patientId).stream()
+        System.out.println("Querying appointments for patientId: " + patientId);
+        List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
+        System.out.println("Found " + appointments.size() + " appointments");
+        return appointments.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<AppointmentResponse> getDoctorAppointments(UUID doctorId, LocalDate date) {
+    public List<AppointmentResponse> getDoctorAppointments(UUID doctorId, LocalDate date, PaymentStatus paymentStatus) {
+        System.out.println("Querying appointments for doctorId: " + doctorId + ", date: " + date + ", paymentStatus: " + paymentStatus);
         List<Appointment> appointments;
-        if (date != null) {
+        
+        if (date != null && paymentStatus != null) {
+            appointments = appointmentRepository.findByDoctorIdAndAppointmentDateAndPaymentStatus(doctorId, date, paymentStatus);
+        } else if (date != null) {
             appointments = appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, date);
+        } else if (paymentStatus != null) {
+            appointments = appointmentRepository.findByDoctorIdAndPaymentStatus(doctorId, paymentStatus);
         } else {
             appointments = appointmentRepository.findByDoctorId(doctorId);
         }
+        System.out.println("Found " + appointments.size() + " appointments");
         
         return appointments.stream()
                 .map(this::mapToResponse)
@@ -92,6 +104,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .appointmentTime(appointment.getAppointmentTime())
                 .status(appointment.getStatus())
                 .type(appointment.getType())
+                .paymentStatus(appointment.getPaymentStatus())
                 .notes(appointment.getNotes())
                 .build();
     }

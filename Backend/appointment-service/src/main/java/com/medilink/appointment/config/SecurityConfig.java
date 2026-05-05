@@ -26,10 +26,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/appointments").hasRole("PATIENT")
+                .requestMatchers(HttpMethod.POST, "/appointments/create").hasRole("PATIENT")
                 .requestMatchers("/appointments/patient").hasRole("PATIENT")
                 .requestMatchers("/appointments/doctor/**").hasRole("DOCTOR")
                 .requestMatchers(HttpMethod.PATCH, "/appointments/*/status").hasRole("DOCTOR")
+                .requestMatchers(HttpMethod.POST,"/availability").hasRole("DOCTOR")
                 .requestMatchers("/availability/**").permitAll()
                 .anyRequest().authenticated()
             )

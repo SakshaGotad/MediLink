@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.medilink.appointment.enums.AppointmentStatus;
 import com.medilink.appointment.enums.AppointmentType;
+import com.medilink.appointment.enums.PaymentStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,6 +62,10 @@ public class Appointment {
     @Column(nullable = false)
     private AppointmentType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus paymentStatus;
+
      private String notes;
 
      private LocalDateTime createdAt;
@@ -72,6 +77,7 @@ public class Appointment {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.status = AppointmentStatus.PENDING;
+        this.paymentStatus = PaymentStatus.PENDING;
     }
 
      @PreUpdate

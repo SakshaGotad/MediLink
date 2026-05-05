@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.medilink.appointment.dto.AppointmentResponse;
 import com.medilink.appointment.dto.CreateAppointmentRequest;
+import com.medilink.appointment.enums.PaymentStatus;
 import com.medilink.appointment.service.AppointmentService;
 
 import jakarta.validation.Valid;
@@ -35,6 +36,7 @@ public class AppointmentController {
             Authentication authentication
     ) {
         UUID patientId = UUID.fromString(authentication.getName());
+        System.out.println("Controller - Creating appointment for patientId: " + patientId);
 
         return ResponseEntity.ok(
                 appointmentService.createAppointment(patientId, request)
@@ -45,7 +47,7 @@ public class AppointmentController {
     @GetMapping("/patient")
     public ResponseEntity<List<AppointmentResponse>> getPatientAppointments(Authentication authentication) {
         UUID patientId = UUID.fromString(authentication.getName());
-
+    System.out.println(patientId + "-----------------------------------------------------");
         return ResponseEntity.ok(
                 appointmentService.getPatientAppointments(patientId)
         );
@@ -54,11 +56,12 @@ public class AppointmentController {
     @GetMapping("/doctor")
     public ResponseEntity<List<AppointmentResponse>> getDoctorAppointments(
             Authentication authentication,
-            @RequestParam(required = false) LocalDate date
+            @RequestParam(required = false) LocalDate date,
+            @RequestParam(required = false) PaymentStatus paymentStatus
     ) {
         UUID doctorId = UUID.fromString(authentication.getName());
         return ResponseEntity.ok(
-                appointmentService.getDoctorAppointments(doctorId, date)
+                appointmentService.getDoctorAppointments(doctorId, date, paymentStatus)
         );
     }
 

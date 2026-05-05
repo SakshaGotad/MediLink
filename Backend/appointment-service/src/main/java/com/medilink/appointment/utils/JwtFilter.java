@@ -30,6 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("JwtFilter - Missing or invalid Authorization header");
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,22 +42,28 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String email = jwtService.extractEmail(token);
-        String userId = jwtService.extractUserId(token).toString();
-        String role = jwtService.extractRole(token);
+        try {
+            String email = jwtService.extractEmail(token);
+            String userId = jwtService.extractUserId(token).toString();
+            String role = jwtService.extractRole(token);
 
-        List<SimpleGrantedAuthority> authorities = Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_" + role)
-        );
+            System.out.println("JwtFilter - userId: " + userId + ", role: " + role);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                userId,
-                null,
-                authorities);
-        
-        authentication.setDetails(email); // Keep email in details if needed
+            List<SimpleGrantedAuthority> authorities = Collections.singletonList(
+                    new SimpleGrantedAuthority("ROLE_" + role)
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userId,
+                    null,
+                    authorities);
+
+            authentication.setDetails(email);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception e) {
+            System.err.println("JwtFilter error: " + e.getMessage());
+            // Don't set authentication if there's an error
+        }
 
         filterChain.doFilter(request, response);
     }
